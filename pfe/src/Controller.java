@@ -4,6 +4,7 @@ import jbotsim.ui.JTopology;
 import jbotsim.ui.JViewer;
 
 
+import java.awt.*;
 import java.util.Scanner;
 
 public class Controller implements CommandListener {
@@ -15,6 +16,7 @@ public class Controller implements CommandListener {
     public Controller() {
         topo = new Topology();
         jtopo = new JTopology(topo);
+
         topo.setLinkResolver(new LinkResolver(){
             @Override
             public boolean isHeardBy(Node n1, Node n2) {
@@ -26,6 +28,7 @@ public class Controller implements CommandListener {
         jtopo.addCommand("Switch to IPv4");
         jtopo.addCommand("Switch to IPv6");
         jtopo.addCommand("Add Link");
+        jtopo.addCommand("Composante connexe");
         jtopo.addCommandListener(this);
 
     }
@@ -53,6 +56,21 @@ public class Controller implements CommandListener {
                 l.setWidth(4);
                 topo.addLink(l);
 
+                break;
+            case "Composante connexe" :
+                for(Node n : topo.getNodes()){
+                    if(n instanceof Routeur_ip4 && n.hasNeighbors() == true)
+                        for(Node a : n.getNeighbors()) {
+                            if (a instanceof Routeur_ip4)
+                                a.setColor(Color.red);
+                        }
+                    else
+                         if(n instanceof Routeur_ip6 && n.hasNeighbors() == true)
+                                for(Node a : n.getNeighbors()) {
+                                    if (a instanceof Routeur_ip6)
+                                        a.setColor(Color.green);
+                                }
+                }
                 break;
 
             default :
