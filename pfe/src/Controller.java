@@ -10,12 +10,13 @@ import java.util.Scanner;
 public class Controller implements CommandListener {
     private Topology topo;
     private JTopology jtopo;
-
+    private int  cc =0;
 
 
     public Controller() {
         topo = new Topology();
         jtopo = new JTopology(topo);
+
 
         topo.setLinkResolver(new LinkResolver(){
             @Override
@@ -29,9 +30,29 @@ public class Controller implements CommandListener {
         jtopo.addCommand("Switch to IPv6");
         jtopo.addCommand("Add Link");
         jtopo.addCommand("Composante connexe");
+        jtopo.addCommand("Conversion");
+
         jtopo.addCommandListener(this);
 
     }
+    public int nbRouteurIpv4(Topology t){
+        int nbr = 0;
+        for(Node node : t.getNodes()){
+            if(node instanceof Routeur_ip4)
+                nbr++;
+        }
+        return nbr;
+    }
+
+    public int nbRouteurIpv6(Topology t){
+        int nbr = 0;
+        for(Node node : t.getNodes()){
+            if(node instanceof Routeur_ip6)
+                nbr++;
+        }
+        return nbr;
+    }
+
 
     @Override
     public void onCommand(String command) {
@@ -61,15 +82,34 @@ public class Controller implements CommandListener {
                 for(Node n : topo.getNodes()){
                     if(n instanceof Routeur_ip4 && n.hasNeighbors() == true)
                         for(Node a : n.getNeighbors()) {
-                            if (a instanceof Routeur_ip4)
+                            if (a instanceof Routeur_ip4) {
                                 a.setColor(Color.red);
+                                cc++;
+                            }
+
                         }
                     else
                          if(n instanceof Routeur_ip6 && n.hasNeighbors() == true)
                                 for(Node a : n.getNeighbors()) {
-                                    if (a instanceof Routeur_ip6)
+                                    if (a instanceof Routeur_ip6) {
                                         a.setColor(Color.green);
+                                        cc++;
+                                    }
                                 }
+                }
+                break;
+            case "Conversion" :
+                if(cc == 0){
+                   if(nbRouteurIpv4(topo) <= nbRouteurIpv6(topo))
+                       for(Node n : topo.getNodes()){
+                           if(n instanceof Routeur_ip4)
+                               n.setIcon("/img/conv.png");
+                       }
+                    else
+                       for(Node n : topo.getNodes()){
+                           if(n instanceof Routeur_ip6)
+                               n.setIcon("/img/conv.png");
+                       }
                 }
                 break;
 
