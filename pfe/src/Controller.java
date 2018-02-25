@@ -2,8 +2,10 @@ import jbotsim.*;
 import jbotsim.ui.CommandListener;
 import jbotsim.ui.JTopology;
 import jbotsim.ui.JViewer;
+import jdk.nashorn.internal.scripts.JO;
 
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.Scanner;
 
@@ -29,6 +31,7 @@ public class Controller implements CommandListener {
         jtopo.addCommand("Switch to IPv4");
         jtopo.addCommand("Switch to IPv6");
         jtopo.addCommand("Add Link");
+        jtopo.addCommand("Remove Link");
         jtopo.addCommand("Composante connexe");
         jtopo.addCommand("Conversion");
 
@@ -53,6 +56,15 @@ public class Controller implements CommandListener {
         return nbr;
     }
 
+    public boolean LinkIsExist(Topology t, Link l) {
+        boolean exist = false;
+        for(Link lien : topo.getLinks())
+            if(lien.equals(l))
+                exist =true;
+        return exist;
+
+    }
+
 
     @Override
     public void onCommand(String command) {
@@ -66,17 +78,67 @@ public class Controller implements CommandListener {
                 topo.setDefaultNodeModel(Routeur_ip6.class);
                 break;
             case "Add Link":
+                JPanel panelTest = new JPanel();
+                //Remplissage du premier combobox avec les IDs des routeurs existant dans la topo
+                JComboBox cmb1 = new JComboBox();
+                cmb1.setSize(100,100);
+                for(int i=0;i<topo.getNodes().size();i++){
+                    cmb1.addItem(topo.getNodes().get(i));
+                }
+                //Remplissage du deuxiéme combobox avec les IDs des routeurs existant dans la topo
+                JComboBox cmb2 = new JComboBox();
+                for(int i=0;i<topo.getNodes().size();i++){
+                    cmb2.addItem(topo.getNodes().get(i));
+                }
+                //Ajout des deux listes déroulante dans le conteneur
+                panelTest.add(cmb1);
+                panelTest.add(cmb2);
+                //Affichage de la boite de dialogue
+                //JOptionPane.showMessageDialog(null, panelTest);
+                JOptionPane.showMessageDialog(null,panelTest,"Add Link",JOptionPane.INFORMATION_MESSAGE);
+                if(cmb1.getSelectedIndex()==cmb2.getSelectedIndex()){
+                    //message d'erreur
+                    JOptionPane.showMessageDialog(null, "Les 2 Ids doivent etre differents !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);}
+                else {
+                    //Etablissement du lien
+                    Link l = new Link(topo.getNodes().get(cmb1.getSelectedIndex()), topo.getNodes().get(cmb2.getSelectedIndex()));
+                    l.setWidth(4);
+                    if (!LinkIsExist(topo, l))
+                        topo.addLink(l);
+                    else
+                        JOptionPane.showMessageDialog(null, "le lien "+cmb1.getSelectedIndex()+"--"+cmb2.getSelectedIndex()+" existe déja !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);
+                }
+        break;
+            case "Remove Link":
+                JPanel panelTeste = new JPanel();
+                //Remplissage du premier combobox avec les IDs des routeurs existant dans la topo
+                JComboBox cm1 = new JComboBox();
+                for(int i=0;i<topo.getNodes().size();i++){
+                    cm1.addItem(topo.getNodes().get(i));
+                }
+                //Remplissage du deuxiéme combobox avec les IDs des routeurs existant dans la topo
+                JComboBox cm2 = new JComboBox();
+                for(int i=0;i<topo.getNodes().size();i++){
+                    cm2.addItem(topo.getNodes().get(i));
+                }
+                //Ajout des deux listes déroulante dans le conteneur
+                panelTeste.add(cm1);
+                panelTeste.add(cm2);
+                //Affichage de la boite de dialogue
+                //JOptionPane.showMessageDialog(null, panelTest);
+                JOptionPane.showMessageDialog(null,panelTeste,"Remove Link",JOptionPane.INFORMATION_MESSAGE);
+                if(cm1.getSelectedIndex()==cm2.getSelectedIndex()){
+                    //message d'erreur
+                    JOptionPane.showMessageDialog(null, "Les 2 Ids doivent etre differents !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);}
+                else {
+                    //supression  du lien
+                    Link li = new Link(topo.getNodes().get(cm1.getSelectedIndex()), topo.getNodes().get(cm2.getSelectedIndex()));
+                    if(LinkIsExist(topo,li))
+                        topo.removeLink(li);
+                    else
+                        JOptionPane.showMessageDialog(null, "le lien "+cm1.getSelectedIndex()+"--"+cm2.getSelectedIndex()+" n'existe pas !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);
 
-                System.out.println("First id : ");
-                int i = new Scanner(System.in).nextInt();
-
-                System.out.println("Second id : ");
-                int j = new Scanner(System.in).nextInt();
-
-                Link l =  new Link(topo.getNodes().get(i),topo.getNodes().get(j));
-                l.setWidth(4);
-                topo.addLink(l);
-
+        }
                 break;
             case "Composante connexe" :
                 for(Node n : topo.getNodes()){
