@@ -7,6 +7,8 @@ import jdk.nashorn.internal.scripts.JO;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Controller implements CommandListener {
@@ -32,8 +34,8 @@ public class Controller implements CommandListener {
         jtopo.addCommand("Switch to IPv6");
         jtopo.addCommand("Add Link");
         jtopo.addCommand("Remove Link");
-        jtopo.addCommand("Composante connexe");
-        jtopo.addCommand("Conversion");
+        jtopo.addCommand("Component connected");
+        jtopo.addCommand("Converting");
 
         jtopo.addCommandListener(this);
 
@@ -65,7 +67,20 @@ public class Controller implements CommandListener {
 
     }
 
+    public ArrayList<ArrayList<Node>> composante_connexe(Topology t){
+        ArrayList<ArrayList<Node>> listglobal =new ArrayList<ArrayList<Node>>();
+        ArrayList<Node> listn = new ArrayList<Node>();
+        for(Node n : t.getNodes()){
+            for(Node e : n.getNeighbors()){
+                if(n.getColor() == e.getColor())
+                    listn.add(e);
+            }
 
+            //listn.clear();
+        }
+        listglobal.add(listn);
+        return listglobal;
+    }
     @Override
     public void onCommand(String command) {
 
@@ -83,12 +98,12 @@ public class Controller implements CommandListener {
                 JComboBox cmb1 = new JComboBox();
                 cmb1.setSize(100,100);
                 for(int i=0;i<topo.getNodes().size();i++){
-                    cmb1.addItem(topo.getNodes().get(i));
+                    cmb1.addItem("Routeur "+topo.getNodes().get(i));
                 }
                 //Remplissage du deuxiéme combobox avec les IDs des routeurs existant dans la topo
                 JComboBox cmb2 = new JComboBox();
                 for(int i=0;i<topo.getNodes().size();i++){
-                    cmb2.addItem(topo.getNodes().get(i));
+                    cmb2.addItem("Routeur "+topo.getNodes().get(i));
                 }
                 //Ajout des deux listes déroulante dans le conteneur
                 panelTest.add(cmb1);
@@ -106,7 +121,7 @@ public class Controller implements CommandListener {
                     if (!LinkIsExist(topo, l))
                         topo.addLink(l);
                     else
-                        JOptionPane.showMessageDialog(null, "le lien "+cmb1.getSelectedIndex()+"--"+cmb2.getSelectedIndex()+" existe déja !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "le lien "+cmb1.getSelectedIndex()+" --> "+cmb2.getSelectedIndex()+" existe déja !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);
                 }
         break;
             case "Remove Link":
@@ -136,11 +151,11 @@ public class Controller implements CommandListener {
                     if(LinkIsExist(topo,li))
                         topo.removeLink(li);
                     else
-                        JOptionPane.showMessageDialog(null, "le lien "+cm1.getSelectedIndex()+"--"+cm2.getSelectedIndex()+" n'existe pas !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "le lien "+cm1.getSelectedIndex()+" --> "+cm2.getSelectedIndex()+" n'existe pas !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);
 
         }
                 break;
-            case "Composante connexe" :
+            case "Component connected" :
                 for(Node n : topo.getNodes()){
                     if(n instanceof Routeur_ip4 && n.hasNeighbors() == true)
                         for(Node a : n.getNeighbors()) {
@@ -150,6 +165,7 @@ public class Controller implements CommandListener {
                             }
 
                         }
+
                     else
                          if(n instanceof Routeur_ip6 && n.hasNeighbors() == true)
                                 for(Node a : n.getNeighbors()) {
@@ -159,8 +175,10 @@ public class Controller implements CommandListener {
                                     }
                                 }
                 }
+                //composante_connexe(topo);
+               // System.out.println(composante_connexe(topo));
                 break;
-            case "Conversion" :
+            case "Converting" :
                 if(cc == 0){
                    if(nbRouteurIpv4(topo) <= nbRouteurIpv6(topo))
                        for(Node n : topo.getNodes()){
