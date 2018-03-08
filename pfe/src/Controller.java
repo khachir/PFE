@@ -7,27 +7,49 @@ import jdk.nashorn.internal.scripts.JO;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Controller implements CommandListener {
+public class Controller implements CommandListener, ActionListener {
     private Topology topo;
     private JTopology jtopo;
     private int  cc =0;
+    private JRadioButton r1 = new JRadioButton("switchtoipv4");
+    private JRadioButton r2 = new JRadioButton("switchtoipv6");
+    private JButton btnaddlink = new JButton("Add Link");
+    private JButton btnrmvlink = new JButton("Remove Link");
+    private JButton btncc = new JButton("connected component");
+    private JButton btncvs = new JButton("Conversion");
+
+
+
+
+
+    private ButtonGroup bg;
 
 
     public Controller() {
         topo = new Topology();
         jtopo = new JTopology(topo);
+        JFrame window = new JFrame("Convertisseur");
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setLayout(new BorderLayout());
+        window.setLocationRelativeTo(null);
+        JPanel Buttonpanel =new JPanel();
+        JPanel Btngrp =new JPanel();
+        JPanel topopanel =new JPanel();
+        bg =new ButtonGroup();
+        bg.add(r1);
+        bg.add(r2);
+        Btngrp.add(r1);
+        Btngrp.add(r2);
+//Grid Layout pour les bouttons
+        GridLayout gl = new GridLayout(5,0);
+        gl.setVgap(5); //Cinq pixels d'espace entre les lignes (V comme Vertical)
 
-
-        topo.setLinkResolver(new LinkResolver(){
-            @Override
-            public boolean isHeardBy(Node n1, Node n2) {
-                return false;
-            }
-        });
+//Ou en abrégé : GridLayout gl = new GridLayout(3, 2, 5, 5);
         topo.setDefaultNodeModel(Routeur_ip4.class);
         new JViewer(jtopo);
         jtopo.addCommand("Switch to IPv4");
@@ -36,9 +58,26 @@ public class Controller implements CommandListener {
         jtopo.addCommand("Remove Link");
         jtopo.addCommand("Component connected");
         jtopo.addCommand("Converting");
-
+        //On définit le layout à utiliser sur le content pane
+        //cinq lignes sur deux colonnes
+        Buttonpanel.setLayout(gl);
+        Buttonpanel.add(Btngrp);
+        Buttonpanel.add(btnaddlink);
+        Buttonpanel.add(btnrmvlink);
+        Buttonpanel.add(btncc);
+        Buttonpanel.add(btncvs);
+        topopanel.add(jtopo);
         jtopo.addCommandListener(this);
-
+        window.add(Buttonpanel, BorderLayout.WEST);
+        window.add(topopanel, BorderLayout.EAST);
+        window.pack();
+        window.setVisible(true);
+        topo.setLinkResolver(new LinkResolver(){
+            @Override
+            public boolean isHeardBy(Node n1, Node n2) {
+                return false;
+            }
+        });
     }
     public int nbRouteurIpv4(Topology t){
         int nbr = 0;
@@ -93,7 +132,15 @@ public class Controller implements CommandListener {
                 topo.setDefaultNodeModel(Routeur_ip6.class);
                 break;
             case "Add Link":
-                JPanel panelTest = new JPanel();
+
+
+
+
+
+
+
+
+               /* JPanel panelTest = new JPanel();
                 //Remplissage du premier combobox avec les IDs des routeurs existant dans la topo
                 JComboBox cmb1 = new JComboBox();
                 cmb1.setSize(100,100);
@@ -122,7 +169,7 @@ public class Controller implements CommandListener {
                         topo.addLink(l);
                     else
                         JOptionPane.showMessageDialog(null, "le lien "+cmb1.getSelectedIndex()+" --> "+cmb2.getSelectedIndex()+" existe déja !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);
-                }
+                }*/
         break;
             case "Remove Link":
                 JPanel panelTeste = new JPanel();
@@ -196,5 +243,13 @@ public class Controller implements CommandListener {
             default :
                 // DO nothing
         }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(r1.isSelected())
+            topo.setDefaultNodeModel(Routeur_ip4.class);
+        else
+            topo.setDefaultNodeModel(Routeur_ip6.class);
     }
 }
