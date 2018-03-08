@@ -35,6 +35,8 @@ public class Controller implements CommandListener, ActionListener {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setLayout(new BorderLayout());
         window.setLocationRelativeTo(null);
+        window.setSize(1500 , 1500);
+        window.setResizable(false);
         JPanel Buttonpanel = new JPanel();
         JPanel Btngrp = new JPanel();
         JPanel topopanel = new JPanel();
@@ -54,6 +56,7 @@ public class Controller implements CommandListener, ActionListener {
 
 //Ou en abrégé : GridLayout gl = new GridLayout(3, 2, 5, 5);
         r1.addActionListener(this);
+        r2.addActionListener(this);
         topo.setDefaultNodeModel(Routeur_ip4.class);
         new JViewer(jtopo);
         jtopo.addCommand("Switch to IPv4");
@@ -263,13 +266,9 @@ boolean flag = true;
            System.out.println("Composante connexe");
         }else if(e.getSource()== r1) {
                System.out.println("radio");
-
                 topo.setDefaultNodeModel(Routeur_ip4.class);
-           // else
-             //   topo.setDefaultNodeModel(Routeur_ip6.class);
-
         }
-        else {
+        else if(e.getSource()==r2){
             System.out.println("radio66");
 
             topo.setDefaultNodeModel(Routeur_ip6.class);
