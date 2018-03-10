@@ -23,7 +23,8 @@ public class Controller implements CommandListener, ActionListener {
     private JButton btnrmvlink = new JButton("Remove Link");
     private JButton btncc = new JButton("connected component");
     private JButton btncvs = new JButton("Conversion");
-
+    private ArrayList<ArrayList<Node>>  global_list = new ArrayList<ArrayList<Node>>();
+    private ArrayList<Node> tmp;
 
     private ButtonGroup bg;
 
@@ -54,17 +55,11 @@ public class Controller implements CommandListener, ActionListener {
         GridLayout gl = new GridLayout(5, 0);
         gl.setVgap(5); //Cinq pixels d'espace entre les lignes (V comme Vertical)
 
-//Ou en abrégé : GridLayout gl = new GridLayout(3, 2, 5, 5);
         r1.addActionListener(this);
         r2.addActionListener(this);
         topo.setDefaultNodeModel(Routeur_ip4.class);
-        new JViewer(jtopo);
-        jtopo.addCommand("Switch to IPv4");
-        jtopo.addCommand("Switch to IPv6");
-        jtopo.addCommand("Add Link");
-        jtopo.addCommand("Remove Link");
-        jtopo.addCommand("Component connected");
-        jtopo.addCommand("Converting");
+       // new JViewer(jtopo);
+        //jtopo.addCommand("Converting");
         //On définit le layout à utiliser sur le content pane
         //cinq lignes sur deux colonnes
         Buttonpanel.setLayout(gl);
@@ -114,6 +109,10 @@ public class Controller implements CommandListener, ActionListener {
 
     }
 
+    public boolean Isconnexe (Topology t){
+    return  true;
+    }
+
 
     public ArrayList<ArrayList<Node>> composante_connexe(Topology t) {
         ArrayList<ArrayList<Node>> listglobal = new ArrayList<ArrayList<Node>>();
@@ -132,25 +131,12 @@ public class Controller implements CommandListener, ActionListener {
 
     @Override
     public void onCommand(String command) {
-
-        switch (command) {
-            case "Switch to IPv4":
-                topo.setDefaultNodeModel(Routeur_ip4.class);
-                break;
-
-            case "Switch to IPv6":
-                topo.setDefaultNodeModel(Routeur_ip6.class);
-                break;
-            case "Add Link":
-
-
-
-
-
-
-
-
-               /* JPanel panelTest = new JPanel();
+    }
+boolean flag = true;
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource()==btnaddlink){
+                JPanel panelTest = new JPanel();
                 //Remplissage du premier combobox avec les IDs des routeurs existant dans la topo
                 JComboBox cmb1 = new JComboBox();
                 cmb1.setSize(100,100);
@@ -179,116 +165,105 @@ public class Controller implements CommandListener, ActionListener {
                         topo.addLink(l);
                     else
                         JOptionPane.showMessageDialog(null, "le lien "+cmb1.getSelectedIndex()+" --> "+cmb2.getSelectedIndex()+" existe déja !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);
-                }*/
-                break;
-            case "Remove Link":
-                JPanel panelTeste = new JPanel();
-                //Remplissage du premier combobox avec les IDs des routeurs existant dans la topo
-                JComboBox cm1 = new JComboBox();
-                for (int i = 0; i < topo.getNodes().size(); i++) {
-                    cm1.addItem(topo.getNodes().get(i));
                 }
-                //Remplissage du deuxiéme combobox avec les IDs des routeurs existant dans la topo
-                JComboBox cm2 = new JComboBox();
-                for (int i = 0; i < topo.getNodes().size(); i++) {
-                    cm2.addItem(topo.getNodes().get(i));
-                }
-                //Ajout des deux listes déroulante dans le conteneur
-                panelTeste.add(cm1);
-                panelTeste.add(cm2);
-                //Affichage de la boite de dialogue
-                //JOptionPane.showMessageDialog(null, panelTest);
-                JOptionPane.showMessageDialog(null, panelTeste, "Remove Link", JOptionPane.INFORMATION_MESSAGE);
-                if (cm1.getSelectedIndex() == cm2.getSelectedIndex()) {
-                    //message d'erreur
-                    JOptionPane.showMessageDialog(null, "Les 2 Ids doivent etre differents !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    //supression  du lien
-                    Link li = new Link(topo.getNodes().get(cm1.getSelectedIndex()), topo.getNodes().get(cm2.getSelectedIndex()));
-                    if (LinkIsExist(topo, li))
-                        topo.removeLink(li);
-                    else
-                        JOptionPane.showMessageDialog(null, "le lien " + cm1.getSelectedIndex() + " --> " + cm2.getSelectedIndex() + " n'existe pas !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);
-
-                }
-                break;
-            case "Component connected":
-                for (Node n : topo.getNodes()) {
-                    if (n instanceof Routeur_ip4 && n.hasNeighbors() == true)
-                        for (Node a : n.getNeighbors()) {
-                            if (a instanceof Routeur_ip4) {
-                                a.setColor(Color.red);
-                                cc++;
-                            }
-
-                        }
-
-                    else if (n instanceof Routeur_ip6 && n.hasNeighbors() == true)
-                        for (Node a : n.getNeighbors()) {
-                            if (a instanceof Routeur_ip6) {
-                                a.setColor(Color.green);
-                                cc++;
-                            }
-                        }
-                }
-                //composante_connexe(topo);
-                // System.out.println(composante_connexe(topo));
-                break;
-            case "Converting":
-                if (cc == 0) {
-                    if (nbRouteurIpv4(topo) <= nbRouteurIpv6(topo))
-                        for (Node n : topo.getNodes()) {
-                            if (n instanceof Routeur_ip4)
-                                n.setIcon("/img/conv.png");
-                        }
-                    else
-                        for (Node n : topo.getNodes()) {
-                            if (n instanceof Routeur_ip6)
-                                n.setIcon("/img/conv.png");
-                        }
-                }
-                break;
-
-            default:
-                // DO nothing
-        }
-    }
-boolean flag = true;
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==btnaddlink){
-            System.out.println("add link");
         }else if(e.getSource()==btnrmvlink){
-            System.out.println("add link");
+            JPanel panelTeste = new JPanel();
+            //Remplissage du premier combobox avec les IDs des routeurs existant dans la topo
+            JComboBox cm1 = new JComboBox();
+            for (int i = 0; i < topo.getNodes().size(); i++) {
+                cm1.addItem(topo.getNodes().get(i));
+            }
+            //Remplissage du deuxiéme combobox avec les IDs des routeurs existant dans la topo
+            JComboBox cm2 = new JComboBox();
+            for (int i = 0; i < topo.getNodes().size(); i++) {
+                cm2.addItem(topo.getNodes().get(i));
+            }
+            //Ajout des deux listes déroulante dans le conteneur
+            panelTeste.add(cm1);
+            panelTeste.add(cm2);
+            //Affichage de la boite de dialogue
+            //JOptionPane.showMessageDialog(null, panelTest);
+            JOptionPane.showMessageDialog(null, panelTeste, "Remove Link", JOptionPane.INFORMATION_MESSAGE);
+            if (cm1.getSelectedIndex() == cm2.getSelectedIndex()) {
+                //message d'erreur
+                JOptionPane.showMessageDialog(null, "Les 2 Ids doivent etre differents !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                //supression  du lien
+                Link li = new Link(topo.getNodes().get(cm1.getSelectedIndex()), topo.getNodes().get(cm2.getSelectedIndex()));
+                if (LinkIsExist(topo, li))
+                    topo.removeLink(li);
+                else
+                    JOptionPane.showMessageDialog(null, "le lien " + cm1.getSelectedIndex() + " --> " + cm2.getSelectedIndex() + " n'existe pas !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);
+
+            }
         }else if (e.getSource()==btncvs){
             System.out.println("Conversion");
+
         }else if (e.getSource()==btncc){
-           System.out.println("Composante connexe");
+            for(Node n : topo.getNodes()){
+                if( n instanceof Routeur_ip4){
+                    if(n.getNeighbors().size() == 0){
+                        System.out.println("le graphe n'est pas connexe !!");
+                    }else{
+                        for(Node a : n.getNeighbors())
+                            if(a instanceof Routeur_ip4){
+                                tmp = new ArrayList<Node>();
+                                tmp.add(a);
+                                a.setColor(Color.red);
+                            }
+                        global_list.add(tmp);
+
+                    }
+
+                }
+            }
+
+             System.out.println(global_list);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            /*
+            for (Node n : topo.getNodes()) {
+                if (n instanceof Routeur_ip4 && n.hasNeighbors() == true)
+                    for (Node a : n.getNeighbors()) {
+                        if (a instanceof Routeur_ip4) {
+                            a.setColor(Color.red);
+                            cc++;
+                        }
+
+                    }
+
+                else if (n instanceof Routeur_ip6 && n.hasNeighbors() == true)
+                    for (Node a : n.getNeighbors()) {
+                        if (a instanceof Routeur_ip6) {
+                            a.setColor(Color.green);
+                            cc++;
+                        }
+                    }
+            }*/
         }else if(e.getSource()== r1) {
                System.out.println("radio");
                 topo.setDefaultNodeModel(Routeur_ip4.class);
         }
         else if(e.getSource()==r2){
-            System.out.println("radio66");
-
             topo.setDefaultNodeModel(Routeur_ip6.class);
-            // else
-            //   topo.setDefaultNodeModel(Routeur_ip6.class);
 
         }
 
 
-
-        //Object source=e.getSource();
-        /*switch (e.getSource()){
-            case "btnaddlink" :
-                System.out.println("add link");
-                break;
-            case "btncc" :
-                System.out.println("composante connexe");
-                break;
-            default:
-                //
-        }*/
     }
 }
