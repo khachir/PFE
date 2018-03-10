@@ -1,6 +1,8 @@
 import jbotsim.*;
 import jbotsim.ui.CommandListener;
 import jbotsim.ui.JTopology;
+import jbotsim.event.SelectionListener;
+import jbotsim.event.TopologyListener;
 import jbotsim.ui.JViewer;
 import jdk.nashorn.internal.runtime.regexp.joni.ast.StringNode;
 import jdk.nashorn.internal.scripts.JO;
@@ -13,7 +15,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Controller implements CommandListener, ActionListener {
+public class Controller implements CommandListener, ActionListener ,SelectionListener {
     private Topology topo;
     private JTopology jtopo;
     private int cc = 0;
@@ -130,44 +132,50 @@ public class Controller implements CommandListener, ActionListener {
     }
 
     @Override
-    public void onCommand(String command) {
+    public void onCommand(String s) {
+
+    }
+  int k=0;
+    int i=0;
+    int tab[] = new int[2];
+    @Override
+    public void onSelection(Node node) {
+
+
+        tab[i]=node.getID();
+        i++;
+
+        if (i > 1 && k==1) {
+            Link l = new Link(topo.getNodes().get(tab[0]), topo.getNodes().get(tab[1]));
+            l.setWidth(4);
+            topo.addLink(l);
+
+            i=0;
+        }
+
+        else if (i > 1 && k==2){
+
+            Link li = new Link(topo.getNodes().get(tab[0]), topo.getNodes().get(tab[1]));
+            if (LinkIsExist(topo, li))
+                topo.removeLink(li);
+        }
+
+
+
     }
 boolean flag = true;
     @Override
+
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==btnaddlink){
-                JPanel panelTest = new JPanel();
-                //Remplissage du premier combobox avec les IDs des routeurs existant dans la topo
-                JComboBox cmb1 = new JComboBox();
-                cmb1.setSize(100,100);
-                for(int i=0;i<topo.getNodes().size();i++){
-                    cmb1.addItem("Routeur "+topo.getNodes().get(i));
-                }
-                //Remplissage du deuxiéme combobox avec les IDs des routeurs existant dans la topo
-                JComboBox cmb2 = new JComboBox();
-                for(int i=0;i<topo.getNodes().size();i++){
-                    cmb2.addItem("Routeur "+topo.getNodes().get(i));
-                }
-                //Ajout des deux listes déroulante dans le conteneur
-                panelTest.add(cmb1);
-                panelTest.add(cmb2);
-                //Affichage de la boite de dialogue
-                //JOptionPane.showMessageDialog(null, panelTest);
-                JOptionPane.showMessageDialog(null,panelTest,"Add Link",JOptionPane.INFORMATION_MESSAGE);
-                if(cmb1.getSelectedIndex()==cmb2.getSelectedIndex()){
-                    //message d'erreur
-                    JOptionPane.showMessageDialog(null, "Les 2 Ids doivent etre differents !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);}
-                else {
-                    //Etablissement du lien
-                    Link l = new Link(topo.getNodes().get(cmb1.getSelectedIndex()), topo.getNodes().get(cmb2.getSelectedIndex()));
-                    l.setWidth(4);
-                    if (!LinkIsExist(topo, l))
-                        topo.addLink(l);
-                    else
-                        JOptionPane.showMessageDialog(null, "le lien "+cmb1.getSelectedIndex()+" --> "+cmb2.getSelectedIndex()+" existe déja !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);
-                }
+k=1;
+            topo.addSelectionListener(this);
+
         }else if(e.getSource()==btnrmvlink){
-            JPanel panelTeste = new JPanel();
+
+            k=2;
+
+            /* JPanel panelTeste = new JPanel();
             //Remplissage du premier combobox avec les IDs des routeurs existant dans la topo
             JComboBox cm1 = new JComboBox();
             for (int i = 0; i < topo.getNodes().size(); i++) {
@@ -195,7 +203,7 @@ boolean flag = true;
                 else
                     JOptionPane.showMessageDialog(null, "le lien " + cm1.getSelectedIndex() + " --> " + cm2.getSelectedIndex() + " n'existe pas !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);
 
-            }
+            }*/
         }else if (e.getSource()==btncvs){
             System.out.println("Conversion");
 
