@@ -1,19 +1,15 @@
+package code;
+
 import jbotsim.*;
 import jbotsim.ui.CommandListener;
 import jbotsim.ui.JTopology;
 import jbotsim.event.SelectionListener;
-import jbotsim.event.TopologyListener;
-import jbotsim.ui.JViewer;
-import jdk.nashorn.internal.runtime.regexp.joni.ast.StringNode;
-import jdk.nashorn.internal.scripts.JO;
 
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Controller implements CommandListener, ActionListener ,SelectionListener {
     private Topology topo;
@@ -34,7 +30,7 @@ public class Controller implements CommandListener, ActionListener ,SelectionLis
     public Controller() {
         topo = new Topology();
         jtopo = new JTopology(topo);
-        JFrame window = new JFrame("Convertisseur");
+        JFrame window = new JFrame("code.Convertisseur");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setLayout(new BorderLayout());
         window.setLocationRelativeTo(null);
@@ -76,6 +72,7 @@ public class Controller implements CommandListener, ActionListener ,SelectionLis
         window.add(topopanel, BorderLayout.EAST);
         window.pack();
         window.setVisible(true);
+        topo.addSelectionListener(this);
         topo.setLinkResolver(new LinkResolver() {
             @Override
             public boolean isHeardBy(Node n1, Node n2) {
@@ -158,6 +155,8 @@ public class Controller implements CommandListener, ActionListener ,SelectionLis
             Link li = new Link(topo.getNodes().get(tab[0]), topo.getNodes().get(tab[1]));
             if (LinkIsExist(topo, li))
                 topo.removeLink(li);
+
+
         }
 
 
@@ -168,42 +167,15 @@ boolean flag = true;
 
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==btnaddlink){
-k=1;
-            topo.addSelectionListener(this);
+        k=1;
+
 
         }else if(e.getSource()==btnrmvlink){
 
             k=2;
 
-            /* JPanel panelTeste = new JPanel();
-            //Remplissage du premier combobox avec les IDs des routeurs existant dans la topo
-            JComboBox cm1 = new JComboBox();
-            for (int i = 0; i < topo.getNodes().size(); i++) {
-                cm1.addItem(topo.getNodes().get(i));
-            }
-            //Remplissage du deuxiéme combobox avec les IDs des routeurs existant dans la topo
-            JComboBox cm2 = new JComboBox();
-            for (int i = 0; i < topo.getNodes().size(); i++) {
-                cm2.addItem(topo.getNodes().get(i));
-            }
-            //Ajout des deux listes déroulante dans le conteneur
-            panelTeste.add(cm1);
-            panelTeste.add(cm2);
-            //Affichage de la boite de dialogue
-            //JOptionPane.showMessageDialog(null, panelTest);
-            JOptionPane.showMessageDialog(null, panelTeste, "Remove Link", JOptionPane.INFORMATION_MESSAGE);
-            if (cm1.getSelectedIndex() == cm2.getSelectedIndex()) {
-                //message d'erreur
-                JOptionPane.showMessageDialog(null, "Les 2 Ids doivent etre differents !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                //supression  du lien
-                Link li = new Link(topo.getNodes().get(cm1.getSelectedIndex()), topo.getNodes().get(cm2.getSelectedIndex()));
-                if (LinkIsExist(topo, li))
-                    topo.removeLink(li);
-                else
-                    JOptionPane.showMessageDialog(null, "le lien " + cm1.getSelectedIndex() + " --> " + cm2.getSelectedIndex() + " n'existe pas !!", "Erreur", JOptionPane.INFORMATION_MESSAGE);
 
-            }*/
+
         }else if (e.getSource()==btncvs){
             System.out.println("Conversion");
 
@@ -246,18 +218,18 @@ k=1;
 
             /*
             for (Node n : topo.getNodes()) {
-                if (n instanceof Routeur_ip4 && n.hasNeighbors() == true)
+                if (n instanceof code.Routeur_ip4 && n.hasNeighbors() == true)
                     for (Node a : n.getNeighbors()) {
-                        if (a instanceof Routeur_ip4) {
+                        if (a instanceof code.Routeur_ip4) {
                             a.setColor(Color.red);
                             cc++;
                         }
 
                     }
 
-                else if (n instanceof Routeur_ip6 && n.hasNeighbors() == true)
+                else if (n instanceof code.Routeur_ip6 && n.hasNeighbors() == true)
                     for (Node a : n.getNeighbors()) {
-                        if (a instanceof Routeur_ip6) {
+                        if (a instanceof code.Routeur_ip6) {
                             a.setColor(Color.green);
                             cc++;
                         }

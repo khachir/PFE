@@ -1,9 +1,11 @@
+package code;
+
 import jbotsim.Node;
 
 public class Convertisseur extends Node {
     public Convertisseur(){
 
-        setIcon("/img/conv.png");
+        setIcon("/code/img/conv.png");
         setSize(30);
     }
 
