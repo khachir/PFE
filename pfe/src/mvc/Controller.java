@@ -47,10 +47,10 @@ public class Controller implements ActionListener,SelectionListener,CommandListe
             else if(e.getSource()==v.getBtnrmvlink()){ k=2; }
 
 
-            else if (e.getSource()==v.getBtncvs()){ System.out.println("Conversion"); }
+            else if (e.getSource()==v.getBtncvs()){ m.convertion(v.topo); }
 
 
-            else if (e.getSource()==v.getBtncc()){ System.out.println("composante conex"); }
+            else if (e.getSource()==v.getBtncc()){ m.composante(v.topo); }
 
 
             else if(e.getSource()== v.getR1()) { v.topo.setDefaultNodeModel(Routeur_ip4.class); }

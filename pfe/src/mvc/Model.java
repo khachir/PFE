@@ -48,11 +48,15 @@ public void removelink(Topology topo,Node node){
 }
 
 
-public void composante (Topology topo){}
+public void composante (Topology topo){
+
+
+    //to do
+}
 
 
 public void convertion(Topology topo){}
 
 
-
+//to do
 }
