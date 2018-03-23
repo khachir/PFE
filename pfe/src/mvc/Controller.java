@@ -5,8 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import code.Routeur_ip4;
-import code.Routeur_ip6;
+
 import jbotsim.*;
 import jbotsim.event.SelectionListener;
 import jbotsim.ui.CommandListener;
@@ -26,10 +25,12 @@ public class Controller implements ActionListener,SelectionListener,CommandListe
 
              this.m = m;
              this.v=v;
+             v.getVider().addActionListener(this);
              v.getBtnaddlink().addActionListener(this);
              v.getBtnrmvlink().addActionListener(this);
              v.getBtncc().addActionListener(this);
              v.getBtncvs().addActionListener(this);
+             v.getSwitchrout().addActionListener(this);
              v.getR1().addActionListener(this);
              v.getR2().addActionListener(this);
              v.topo.setDefaultNodeModel(Routeur_ip4.class);
@@ -53,6 +54,12 @@ public class Controller implements ActionListener,SelectionListener,CommandListe
             else if (e.getSource()==v.getBtncc()){ m.composante(v.topo); }
 
 
+            else if(e.getSource()== v.getVider()) { v.topo.clear(); }
+
+
+            else if (e.getSource()==v.getSwitchrout()){ k=3; }
+
+
             else if(e.getSource()== v.getR1()) { v.topo.setDefaultNodeModel(Routeur_ip4.class); }
 
 
@@ -70,6 +77,8 @@ public class Controller implements ActionListener,SelectionListener,CommandListe
         if (k==1) m.addlink(v.topo,node);
 
         else if (k==2) m.removelink(v.topo,node);
+
+        else if (k==3) m.changerderout(v.topo,node);
 
     }
 
