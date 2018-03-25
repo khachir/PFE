@@ -8,7 +8,6 @@ public class Model {
 
 
 
-    public  static ArrayList<HashSet>  allcc = new ArrayList<HashSet>();
 
     Point2D localisationip6 =new Point2D() {
         @Override
@@ -91,6 +90,8 @@ public class Model {
     }
 
     public void removelink(Topology topo,Node node){
+
+
         tab[i]=node.getID();
         i++;
         if (i > 1 ){
@@ -108,7 +109,7 @@ public class Model {
 
 
     public  ArrayList<Routeur> visitednode = new ArrayList<Routeur>();
-
+    public static  ArrayList allcc = new ArrayList();
     public static    comconex com=new comconex();
 
 
@@ -132,8 +133,8 @@ public class Model {
 
 
 
-     
-        allcc.add(com.getComc());
+
+        allcc.add(new ArrayList<>(com.getComc()));
 
 
         com.getComc().clear();
@@ -211,7 +212,10 @@ public class Model {
 
 
 
-    public void convertion(Topology topo){}
+    public void convertion(Topology topo){
+
+        System.out.println(allcc);
+    }
 
 
 //to do
