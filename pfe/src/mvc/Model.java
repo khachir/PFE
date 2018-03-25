@@ -110,21 +110,21 @@ public class Model {
 
     public  ArrayList<Routeur> visitednode = new ArrayList<Routeur>();
     public static  ArrayList allcc = new ArrayList();
-    public static    comconex com=new comconex();
+    public static     HashSet  com=new HashSet();
 
 
 
  public   static void parcoursProfondeur(Routeur origine, ArrayList visitednode) {
 
         visitednode.add(origine);
-        com.addrouteurtocomc(origine.getID());
+        com.add(origine);
 //        System.out.println(origine.getID());
         Iterator m = origine.getNeighbors().iterator();
         while (m.hasNext()) {
 
             Routeur suivant = (Routeur)m.next();
             if (!visitednode.contains(suivant) && memetype(suivant,origine)) {
-                com.addrouteurtocomc(suivant.getID());
+                com.add(suivant);
                 parcoursProfondeur(suivant, visitednode);
             }
 
@@ -132,14 +132,9 @@ public class Model {
         }
 
 
-
-
-        allcc.add(new ArrayList<>(com.getComc()));
-
-
-        com.getComc().clear();
-
-
+if (!com.isEmpty())
+        allcc.add(new ArrayList<>(com));
+        com.clear();
     }
 
 
