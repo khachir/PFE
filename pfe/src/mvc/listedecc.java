@@ -7,17 +7,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class listedecc {
-    ArrayList listdeecc;
+    HashSet listdeecc;
 
     public listedecc() {
-        this.listdeecc=new ArrayList();
+        this.listdeecc=new HashSet();
     }
 
 
-    public void addcctolistdecc(comconex cc){this.listdeecc.add(cc);}
+    public void addcctolistdecc(HashSet cc){this.listdeecc.add(cc);}
 
 
-    public ArrayList getListdeecc() {
+    public HashSet getListdeecc() {
         return listdeecc;
     }
 }

@@ -1,9 +1,50 @@
 package mvc;
 import jbotsim.*;
 
+import java.awt.geom.Point2D;
 import java.util.*;
 
 public class Model {
+
+
+
+    public  static ArrayList<HashSet>  allcc = new ArrayList<HashSet>();
+
+    Point2D localisationip6 =new Point2D() {
+        @Override
+        public double getX() {
+            return 0;
+        }
+
+        @Override
+        public double getY() {
+            return 0;
+        }
+
+        @Override
+        public void setLocation(double v, double v1) {
+
+        }
+    };
+
+    Point2D localisationip4 =new Point2D() {
+        @Override
+        public double getX() {
+            return 0;
+        }
+
+        @Override
+        public double getY() {
+            return 0;
+        }
+
+        @Override
+        public void setLocation(double v, double v1) {
+
+        }
+    };
+
+
 
 
     int i=0;
@@ -72,24 +113,28 @@ public class Model {
 
 
 
-    static void parcoursProfondeur(Routeur origine, ArrayList visitednode) {
+ public   static void parcoursProfondeur(Routeur origine, ArrayList visitednode) {
 
         visitednode.add(origine);
-        com.addrouteurtocomc(origine);
+        com.addrouteurtocomc(origine.getID());
 //        System.out.println(origine.getID());
         Iterator m = origine.getNeighbors().iterator();
         while (m.hasNext()) {
 
             Routeur suivant = (Routeur)m.next();
             if (!visitednode.contains(suivant) && memetype(suivant,origine)) {
-                com.addrouteurtocomc(suivant);
+                com.addrouteurtocomc(suivant.getID());
                 parcoursProfondeur(suivant, visitednode);
             }
 
 
         }
 
-System.out.print(com.getComc());
+
+
+     
+        allcc.add(com.getComc());
+
 
         com.getComc().clear();
 
@@ -117,7 +162,6 @@ System.out.print(com.getComc());
         }
 
 
-
     }
 
 
@@ -127,12 +171,40 @@ System.out.print(com.getComc());
 
     public void changerderout(Topology topo,Node node){
 
-        if (node instanceof Routeur_ip4)
-            System.out.print("hada ip4");
 
 
-        else if (node instanceof Routeur_ip6)
-            System.out.print("hada ip6");
+        if (node instanceof Routeur_ip4) {
+            localisationip4 = node.getLocation();
+            Routeur_ip6 ip6 = new Routeur_ip6();
+            ip6.setID(node.getID());
+            topo.addNode(localisationip4.getX(),localisationip4.getY(), ip6);
+            for(Node n : node.getNeighbors()){
+                Link l = new Link(ip6 ,n );
+                l.setWidth(4);
+                topo.addLink(l);
+            }
+            for(Node n : node.getNeighbors()){
+                topo.removeLink(topo.getLink(node,n));
+            }
+            topo.removeNode(node);
+        }
+
+        else if (node instanceof Routeur_ip6) {
+            localisationip6 = node.getLocation();
+            Routeur_ip4 ip4 = new Routeur_ip4();
+            ip4.setID(node.getID());
+            topo.addNode(localisationip6.getX(), localisationip4.getY(), ip4);
+            for (Node n : node.getNeighbors()) {
+                Link l = new Link(ip4, n);
+                l.setWidth(4);
+                topo.addLink(l);
+            }
+            for (Node n : node.getNeighbors()) {
+                topo.removeLink(topo.getLink(node, n));
+            }
+            topo.removeNode(node);
+        }
+
 
 
     }

@@ -15,7 +15,7 @@ public class comconex {
          this.comc= new HashSet();
     }
 
-    public void addrouteurtocomc(Routeur r){
+    public void addrouteurtocomc(int r){
 
         this.comc.add(r);
 
