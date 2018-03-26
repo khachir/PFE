@@ -28,7 +28,7 @@ public class Controller implements ActionListener,SelectionListener,CommandListe
              v.getVider().addActionListener(this);
              v.getBtnaddlink().addActionListener(this);
              v.getBtnrmvlink().addActionListener(this);
-             v.getBtncc().addActionListener(this);
+//             v.getBtncc().addActionListener(this);
              v.getBtncvs().addActionListener(this);
              v.getSwitchrout().addActionListener(this);
              v.getR1().addActionListener(this);
