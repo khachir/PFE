@@ -135,8 +135,10 @@ public class View  {
     }
 
     public void stylebutton(JButton button){
-        button.setForeground(Color.BLACK);
-        button.setBackground(new Color(204, 204, 179));
+       
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
 
 
 

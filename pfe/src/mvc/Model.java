@@ -73,7 +73,7 @@ public class Model {
 
     }
 
-    public static boolean memetype(Routeur z, Routeur q) {
+    public static boolean sametype(Routeur z, Routeur q) {
 
 
         if ((z.getType() == 4 && q.getType() == 4) || (z.getType() == 6 && q.getType() == 6)) {
@@ -130,7 +130,7 @@ public class Model {
         while (m.hasNext()) {
 
             Routeur suivant = (Routeur) m.next();
-            if (!visitednode.contains(suivant) && memetype(suivant, origine)) {
+            if (!visitednode.contains(suivant) && sametype(suivant, origine)) {
                 com.add(suivant);
                 parcoursProfondeur(suivant, visitednode);
             }
