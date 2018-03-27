@@ -83,7 +83,21 @@ public class Model {
             return false;
 
     }
+    public void composante(Topology topo) {
 
+
+        Iterator p = topo.getNodes().iterator();
+
+
+        while (p.hasNext()) {
+            Routeur s = (Routeur) p.next();
+            if (!visitednode.contains(s)) {
+                parcoursProfondeur(s, visitednode);
+            }
+        }
+
+
+    }
 
     public void addlink(Topology topo, Node node) {
 
@@ -95,6 +109,7 @@ public class Model {
             l.setWidth(4);
             topo.addLink(l);
             i = 0;
+
         }
     }
 
@@ -111,7 +126,6 @@ public class Model {
             i = 0;
 
         }
-
 
     }
 
@@ -144,21 +158,7 @@ public class Model {
     }
 
 
-    public void composante(Topology topo) {
 
-
-        Iterator p = topo.getNodes().iterator();
-
-
-        while (p.hasNext()) {
-            Routeur s = (Routeur) p.next();
-            if (!visitednode.contains(s)) {
-                parcoursProfondeur(s, visitednode);
-            }
-        }
-
-
-    }
 
 
     public void changerderout(Topology topo, Node node) {
@@ -194,9 +194,16 @@ public class Model {
             topo.removeNode(node);
         }
 
-
+        composante(topo);
     }
-
+    public int nbrdelien(Topology topo, Node n, List<Node> l){
+        int nbr =0;
+        for(int i=0;i<l.size();i++){
+            if(LinkIsExist(topo,new Link(n,l.get(i))));
+            nbr++;
+        }
+        return nbr;
+    }
 
     public void switchtoconvert(Topology topo, Node node) {
         localisationnode = node.getLocation();
@@ -220,14 +227,14 @@ public class Model {
 
     public Boolean convertion1(Topology topo){
 
-    for (Node n : topo.getNodes()){
-if (n.getNeighbors().size()==(topo.getNodes().size()-1)){
+        for (Node n : topo.getNodes()){
+            if (n.getNeighbors().size()==(topo.getNodes().size()-1)){
 
-  switchtoconvert(topo,n);
-  return true;
-} }
+                switchtoconvert(topo,n);
+                return true;
+            } }
 
-return false;
+        return false;
 
     }
 
@@ -236,8 +243,8 @@ return false;
         for (int q=0;q<l.size();q++){
             for (int s=0;s<l.get(q).getNeighbors().size();s++){
 
-            if (l.get(q).getNeighbors().get(s).getID()==r.get(0).getNeighbors().get(0).getID())
-                return true;
+                if (l.get(q).getNeighbors().get(s).getID()==r.get(0).getNeighbors().get(0).getID())
+                    return true;
 
 
 
@@ -245,54 +252,73 @@ return false;
         }
         return false;
 
-
     }
 
-    public Boolean convertion2(Topology topo,ArrayList<List<Node>> a){
-        for (int y=0;y<a.size();y++){
-            if (a.get(y).size()==1){
-                if (a.get(y).get(0).getNeighbors().size()==1){
-                    Node m=a.get(y).get(0).getNeighbors().get(0);
-                    switchtoconvert(topo,m);
-                    return true;
-                }
-                else {
-                    for (int t=0;t<a.size();t++){
-                    if (a.get(y)!=a.get(t)){
+    public static ArrayList listdeisoltedcc=new ArrayList();
+    public void listofisolatedNode(List<List> list){
+        for (int o=0;o<list.size();o++){
 
-                        if (a.get(t).get(0).getNeighbors().size()==1){
-                            if (samevoisin(a.get(t),a.get(y))){
+            if (list.get(o).size()==1)
 
-                                return true;
-                            }
-                        }
-
-
-                    }
-
-                    }
-                        return true;
-                }
-
-
-
-            }
+                listdeisoltedcc.add(list.get(o).get(0));
 
         }
-
-    return false;
+//System.out.println(listdeisoltedcc);
     }
 
-    public void convertion3(){
+
+ArrayList<Integer> jj=new ArrayList<>();
+
+    public void conversion2(Topology topo,List<Node> l){
+
+for (int e=0;e<l.size();e++){
+    ArrayList<Node> n=new ArrayList(l.get(e).getNeighbors());
+   if (n.size()==1){
+      // System.out.println(l.get(e).getNeighbors().get(0));
+       switchtoconvert(topo,n.get(0));
 
 
-    }
+   }
+
+   else {
+
+       for (int a=0;a<n.size();a++){
+
+//jj.add(new Integer(nbrdelien(topo,n.get(a),listdeisoltedcc)));
+
+       }
+
+
+
+       }
+
+
+   }
+
+}
+
+
+
+    public static ArrayList ccrest=new ArrayList();
+public void ccrestant(List m,List j){
+
+
+
+}
+
 
 
 
     public void convertion(Topology topo){
-        convertion1(topo);
-        System.out.println(allcc);
+//if (convertion1(topo)){
+        listofisolatedNode(allcc);
+conversion2(topo,listdeisoltedcc);
+
+        System.out.println(nbrdelien(topo,topo.getNodes().get(1),listdeisoltedcc));
+        System.out.println(nbrdelien(topo,topo.getNodes().get(2),listdeisoltedcc));
+
+//}
+
     }
 
 
